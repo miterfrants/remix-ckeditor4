@@ -20,11 +20,9 @@ export default function App() {
   const editorRef = useRef(null);
   const { CKEditor } = editorRef.current || {};
   useEffect(() => {
-    console.log(require("ckeditor4-react").CKEditor);
     editorRef.current = {
       CKEditor: require("ckeditor4-react").CKEditor, //Added .CKEditor
     };
-    console.log("tsting");
     setEditorLoaded(true);
   }, []);
   const [editorLoaded, setEditorLoaded] = useState(false);
