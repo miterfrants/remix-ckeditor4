@@ -8,6 +8,17 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import styles from "grapesjs/dist/css/grapes.min.css";
+import { CKEditorEventAction } from "ckeditor4-react";
+export function links() {
+  return [{ rel: "stylesheet", href: styles }];
+}
+
+// import "grapesjs/dist/css/grapes.min.css";
+import GrapesJS from "grapesjs";
+import ckeditorPlugin from "grapesjs-plugin-ckeditor";
+console.log(ckeditorPlugin);
+
 import { useEffect, useRef, useState } from "react";
 
 export const meta: MetaFunction = () => ({
@@ -19,14 +30,22 @@ export const meta: MetaFunction = () => ({
 export default function App() {
   const editorRef = useRef(null);
   const { CKEditor } = editorRef.current || {};
+  const [editorLoaded, setEditorLoaded] = useState(false);
+
   useEffect(() => {
     editorRef.current = {
-      CKEditor: require("ckeditor4-react").CKEditor, //Added .CKEditor
+      CKEditor: require("ckeditor4-react").CKEditor,
     };
     setEditorLoaded(true);
   }, []);
-  const [editorLoaded, setEditorLoaded] = useState(false);
-  const [data, setData] = useState("");
+
+  const editorReady = () => {
+    GrapesJS.init({
+      container: `#example-editor`,
+      fromElement: true,
+      plugins: ["gjs-plugin-ckeditor"],
+    });
+  };
 
   return (
     <html lang="en">
@@ -35,7 +54,14 @@ export default function App() {
         <Links />
       </head>
       <body>
-        {editorLoaded ? <CKEditor /> : <p>Carregando...</p>}
+        {editorLoaded ? (
+          <CKEditor onInstanceReady={editorReady} />
+        ) : (
+          <p>Carregando...</p>
+        )}
+        <div id="example-editor">
+          <h1>test</h1>
+        </div>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
